@@ -1,0 +1,178 @@
+#!/bin/sh
+
+_pkgver=6.0.1
+_pkgrel=1
+source_core="https://github.com/pi-hole/pi-hole/archive/v$_pkgver.tar.gz"
+dira="pi-hole-$_pkgver"
+dirb="$dira.cust"
+
+_ssc="/tmp/sedcontrol"
+
+[[ -d $dira ]] && rm -r $dira
+[[ -d $dirb ]] && rm -r $dirb
+
+wget -q -nc -O pihole-$_pkgver.tar.gz $source_core
+tar xf pihole-$_pkgver.tar.gz
+cp -a $dira $dirb
+
+# update checker
+sed -n "/^CORE_VERSION=.*$/w $_ssc" "$dirb"/advanced/Scripts/updatecheck.sh
+if [ -s $_ssc ] ; then rm $_ssc ; else echo "   ==> Sed error: update checker 1" && exit 1 ; fi
+sed -i 's/^CORE_VERSION=.*$/CORE_VERSION="'"$_pkgver"'"/' "$dirb"/advanced/Scripts/updatecheck.sh
+sed -n "/CORE_BRANCH=.*$/w $_ssc" "$dirb"/advanced/Scripts/updatecheck.sh
+if [ -s $_ssc ] ; then rm $_ssc ; else echo "   ==> Sed error: update checker 2" && exit 1 ; fi
+sed -i 's/^CORE_BRANCH=.*$/CORE_BRANCH="master"/' "$dirb"/advanced/Scripts/updatecheck.sh
+sed -n "/^CORE_HASH=.*$/w $_ssc" "$dirb"/advanced/Scripts/updatecheck.sh
+if [ -s $_ssc ] ; then rm $_ssc ; else echo "   ==> Sed error: update checker 3" && exit 1 ; fi
+sed -i 's/^CORE_HASH=.*$/CORE_HASH="builtfromreleasetarball"/' "$dirb"/advanced/Scripts/updatecheck.sh
+sed -n "/^WEB_VERSION=.*$/w $_ssc" "$dirb"/advanced/Scripts/updatecheck.sh
+if [ -s $_ssc ] ; then rm $_ssc ; else echo "   ==> Sed error: update checker 4" && exit 1 ; fi
+sed -i 's/^WEB_VERSION=.*$/WEB_VERSION="$(pacman -Q pi-hole-web | awk '\''{print $2}'\'' | cut -d- -f1)"/' "$dirb"/advanced/Scripts/updatecheck.sh
+sed -n "/^WEB_BRANCH=.*$/w $_ssc" "$dirb"/advanced/Scripts/updatecheck.sh
+if [ -s $_ssc ] ; then rm $_ssc ; else echo "   ==> Sed error: update checker 5" && exit 1 ; fi
+sed -i 's/^WEB_BRANCH=.*$/WEB_BRANCH="master"/' "$dirb"/advanced/Scripts/updatecheck.sh
+sed -n "/^WEB_HASH=.*$/w $_ssc" "$dirb"/advanced/Scripts/updatecheck.sh
+if [ -s $_ssc ] ; then rm $_ssc ; else echo "   ==> Sed error: update checker 6" && exit 1 ; fi
+sed -i 's/^WEB_HASH=.*$/WEB_HASH="builtfromreleasetarball"/' "$dirb"/advanced/Scripts/updatecheck.sh
+
+# the return of service management
+#sed -i "s|service pihole-FTL restart|systemctl restart pihole-FTL|w $_ssc" "$dirb"/pihole
+#if [ -s $_ssc ] ; then rm $_ssc ; else echo "   ==> Sed error: the return of service management" && exit 1 ; fi
+
+# setting up and securing pihole wrapper script
+#sed -n "/debugFunc() {/w $_ssc" "$dirb"/pihole
+#if [ -s $_ssc ] ; then rm $_ssc ; else echo "   ==> Sed error: setting up and securing pihole wrapper script 1" && exit 1 ; fi
+#sed -i '/debugFunc() {/,+16d' "$dirb"/pihole
+
+sed -n "/updatePiholeFunc() {/w $_ssc" "$dirb"/pihole
+if [ -s $_ssc ] ; then rm $_ssc ; else echo "   ==> Sed error: setting up and securing pihole wrapper script 2" && exit 1 ; fi
+sed -i '/updatePiholeFunc() {/,+9d' "$dirb"/pihole
+
+sed -n "/reconfigurePiholeFunc() {/w $_ssc" "$dirb"/pihole
+if [ -s $_ssc ] ; then rm $_ssc ; else echo "   ==> Sed error: setting up and securing pihole wrapper script 3" && exit 1 ; fi
+sed -i '/reconfigurePiholeFunc() {/,+8d' "$dirb"/pihole
+
+sed -n "/uninstallFunc() {/w $_ssc" "$dirb"/pihole
+if [ -s $_ssc ] ; then rm $_ssc ; else echo "   ==> Sed error: setting up and securing pihole wrapper script 4" && exit 1 ; fi
+sed -i '/uninstallFunc() {/,+8d' "$dirb"/pihole
+
+sed -n "/piholeCheckoutFunc() {/w $_ssc" "$dirb"/pihole
+if [ -s $_ssc ] ; then rm $_ssc ; else echo "   ==> Sed error: setting up and securing pihole wrapper script 5" && exit 1 ; fi
+sed -i '/piholeCheckoutFunc() {/,+28d' "$dirb"/pihole
+
+sed -n "/tricorderFunc() {/w $_ssc" "$dirb"/pihole
+if [ -s $_ssc ] ; then rm $_ssc ; else echo "   ==> Sed error: setting up and securing pihole wrapper script 6" && exit 1 ; fi
+sed -i '/tricorderFunc() {/,+20d' "$dirb"/pihole
+
+sed -n "/\"\-[d,r,up]/w $_ssc" "$dirb"/pihole
+if [ -s $_ssc ] ; then rm $_ssc ; else echo "   ==> Sed error: setting up and securing pihole wrapper script 7" && exit 1 ; fi
+sed -i '/\"\-[d,r,up]/d' "$dirb"/pihole
+
+sed -n "/^  \-d/w $_ssc" "$dirb"/pihole
+if [ -s $_ssc ] ; then rm $_ssc ; else echo "   ==> Sed error: setting up and securing pihole wrapper script 8" && exit 1 ; fi
+sed -i '/^  \-d/,+2d' "$dirb"/pihole
+
+sed -n "/^  \-up/w $_ssc" "$dirb"/pihole
+if [ -s $_ssc ] ; then rm $_ssc ; else echo "   ==> Sed error: setting up and securing pihole wrapper script 9" && exit 1 ; fi
+sed -i '/^  \-up/d' "$dirb"/pihole
+
+sed -n "/^  \-r/w $_ssc" "$dirb"/pihole
+if [ -s $_ssc ] ; then rm $_ssc ; else echo "   ==> Sed error: setting up and securing pihole wrapper script 10" && exit 1 ; fi
+sed -i '/^  \-r/d' "$dirb"/pihole
+
+sed -n "/uninstall/w $_ssc" "$dirb"/pihole
+if [ -s $_ssc ] ; then rm $_ssc ; else echo "   ==> Sed error: setting up and securing pihole wrapper script 11" && exit 1 ; fi
+sed -i '/uninstall/d' "$dirb"/pihole
+
+sed -n "/^  checkout/w $_ssc" "$dirb"/pihole
+if [ -s $_ssc ] ; then rm $_ssc ; else echo "   ==> Sed error: setting up and securing pihole wrapper script 12" && exit 1 ; fi
+sed -i '/^  checkout/,+1d' "$dirb"/pihole
+
+sed -n "/^  \"checkout/w $_ssc" "$dirb"/pihole
+if [ -s $_ssc ] ; then rm $_ssc ; else echo "   ==> Sed error: setting up and securing pihole wrapper script 13" && exit 1 ; fi
+sed -i '/^  \"checkout/d' "$dirb"/pihole
+
+sed -n "/tricorder/w $_ssc" "$dirb"/pihole
+if [ -s $_ssc ] ; then rm $_ssc ; else echo "   ==> Sed error: setting up and securing pihole wrapper script 14" && exit 1 ; fi
+sed -i '/tricorder/d' "$dirb"/pihole
+
+# -----------------
+
+# setup gravity.sh
+sed -i "s|/usr/local/bin/|/usr/bin/|w $_ssc" "$dirb"/gravity.sh
+if [ -s $_ssc ] ; then rm $_ssc ; else echo "   ==> Sed error: setup gravity.sh 1" && exit 1 ; fi
+sed -i "s|\. \"/etc/.pihole/advanced/Scripts/database_migration/gravity-db.sh\"|\. \"/opt/pihole/database_migration/gravity-db.sh\"|w $_ssc" "$dirb"/gravity.sh
+if [ -s $_ssc ] ; then rm $_ssc ; else echo "   ==> Sed error: setup gravity.sh 2" && exit 1 ; fi
+sed -i "s|\${piholeGitDir}/advanced/Templates/gravity|/opt/pihole/gravity|w $_ssc" "$dirb"/gravity.sh
+if [ -s $_ssc ] ; then rm $_ssc ; else echo "   ==> Sed error: setup gravity.sh 3" && exit 1 ; fi
+
+# setup gravity.db.sh
+sed -i "s|/etc/.pihole/advanced/Scripts/database_migration/gravity|/opt/pihole/database_migration/gravity|w $_ssc" "$dirb"/advanced/Scripts/database_migration/gravity-db.sh
+if [ -s $_ssc ] ; then rm $_ssc ; else echo "   ==> Sed error: setup gravity.sh 1" && exit 1 ; fi
+
+# setup pihole, utils.sh and webpage.sh
+#sed -i "s|/usr/local/bin|/usr/bin|w $_ssc" "$dirb"/pihole
+#if [ -s $_ssc ] ; then rm $_ssc ; else echo "   ==> Sed error: setup pihole 1" && exit 1 ; fi
+#sed -i "s|/usr/local/bin|/usr/bin|w $_ssc" "$dirb"/advanced/Scripts/webpage.sh
+#if [ -s $_ssc ] ; then rm $_ssc ; else echo "   ==> Sed error: setup pihole 2" && exit 1 ; fi
+#sed -i "s|/run/pihole-FTL.pid|/run/pihole-ftl/pihole-FTL.pid|w $_ssc" "$dirb"/advanced/Scripts/utils.sh
+#if [ -s $_ssc ] ; then rm $_ssc ; else echo "   ==> Sed error: setup pihole 3" && exit 1 ; fi
+
+# -----------------
+
+# change log location to pihole script
+sed -i "s|/var/log/pihole/pihole.log|/run/log/pihole/pihole.log|w $_ssc" "$dirb"/pihole
+if [ -s $_ssc ] ; then rm $_ssc ; else echo "   ==> Sed error: change log location to pihole script" && exit 1 ; fi
+
+# -----------------
+
+# change log location to piholeLogFlush.sh
+sed -n "/\/var\/log\/pihole\/pihole.log/w $_ssc" "$dirb"/advanced/Scripts/piholeLogFlush.sh
+if [ -s $_ssc ] ; then rm $_ssc ; else echo "   ==> Sed error: change log location to piholeLogFlush.sh" && exit 1 ; fi
+sed -i "s|/var/log/pihole/pihole.log|/run/log/pihole/pihole.log|g" "$dirb"/advanced/Scripts/piholeLogFlush.sh
+
+# -----------------
+
+# change log and bin location to logrotate
+sed -i "s|/var/log/pihole/pihole.log|/run/log/pihole/pihole.log|w $_ssc" "$dirb"/advanced/Templates/logrotate
+if [ -s $_ssc ] ; then rm $_ssc ; else echo "   ==> Sed error: change log and bin location to logrotate 1" && exit 1 ; fi
+sed -i "s|/var/log/pihole/FTL.log|/run/log/pihole-ftl/pihole-FTL.log|w $_ssc" "$dirb"/advanced/Templates/logrotate
+if [ -s $_ssc ] ; then rm $_ssc ; else echo "   ==> Sed error: change log and bin location to logrotate 2" && exit 1 ; fi
+sed -i "s|/usr/sbin|/usr/bin|w $_ssc" "$dirb"/advanced/Scripts/piholeLogFlush.sh
+if [ -s $_ssc ] ; then rm $_ssc ; else echo "   ==> Sed error: change log and bin location to logrotate 3" && exit 1 ; fi
+sed -i "s|/var/lib/logrotate/pihole|/var/lib/logrotate_pihole.status|w $_ssc" "$dirb"/advanced/Scripts/piholeLogFlush.sh
+if [ -s $_ssc ] ; then rm $_ssc ; else echo "   ==> Sed error: change log and bin location to logrotate 3" && exit 1 ; fi
+
+# -----------------
+
+# pi-hole sudoers file is now populated by install script
+echo "http ALL=(ALL:ALL) NOPASSWD: /usr/bin/pihole" >> "$dirb"/advanced/Templates/pihole.sudo
+
+# pi-hole dnsmasq config file include ready
+echo "conf-dir=/etc/dnsmasq.d/,*.conf" >> "$dirb"/advanced/dnsmasq.conf.original
+
+# adlists.default is gone and adlists.list is populated by install script
+# from basic-install.sh -- function chooseBlocklists()
+cat <<EOF > "$dirb"/adlists.list
+https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts
+https://mirror1.malwaredomains.com/files/justdomains
+https://s3.amazonaws.com/lists.disconnect.me/simple_tracking.txt
+https://s3.amazonaws.com/lists.disconnect.me/simple_ad.txt
+EOF
+
+cat <<EOF > "$dirb"/dns-servers.conf
+Google (ECS, DNSSEC);8.8.8.8;8.8.4.4;2001:4860:4860:0:0:0:0:8888;2001:4860:4860:0:0:0:0:8844
+OpenDNS (ECS, DNSSEC);208.67.222.222;208.67.220.220;2620:119:35::35;2620:119:53::53
+Level3;4.2.2.1;4.2.2.2;;
+Comodo;8.26.56.26;8.20.247.20;;
+DNS.WATCH (DNSSEC);84.200.69.80;84.200.70.40;2001:1608:10:25:0:0:1c04:b12f;2001:1608:10:25:0:0:9249:d69b
+Quad9 (filtered, DNSSEC);9.9.9.9;149.112.112.112;2620:fe::fe;2620:fe::9
+Quad9 (unfiltered, no DNSSEC);9.9.9.10;149.112.112.10;2620:fe::10;2620:fe::fe:10
+Quad9 (filtered, ECS, DNSSEC);9.9.9.11;149.112.112.11;2620:fe::11;2620:fe::fe:11
+Cloudflare (DNSSEC);1.1.1.1;1.0.0.1;2606:4700:4700::1111;2606:4700:4700::1001
+EOF
+
+diff -uprN $dira $dirb > arch-server-core-$_pkgver-$_pkgrel.patch
+
+git add arch-server-core-$_pkgver-$_pkgrel.patch
+git add patchgen
