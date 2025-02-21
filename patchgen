@@ -170,5 +170,5 @@ EOF
 
 diff -uprN $dira $dirb > arch-server-core-$_pkgver-$_pkgrel.patch
 
-git add arch-server-core-$_pkgver-$_pkgrel.patch
+git add arch-core-$_pkgver-$_pkgrel.patch
 git add patchgen
