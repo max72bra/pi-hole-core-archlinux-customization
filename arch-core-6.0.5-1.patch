@@ -1,6 +1,14 @@
+diff -uprN pi-hole-6.0.5/adlists.list pi-hole-6.0.5.cust/adlists.list
+--- pi-hole-6.0.5/adlists.list	1970-01-01 01:00:00.000000000 +0100
++++ pi-hole-6.0.5.cust/adlists.list	2025-03-05 22:31:44.289822935 +0100
+@@ -0,0 +1,4 @@
++https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts
++https://mirror1.malwaredomains.com/files/justdomains
++https://s3.amazonaws.com/lists.disconnect.me/simple_tracking.txt
++https://s3.amazonaws.com/lists.disconnect.me/simple_ad.txt
 diff -uprN pi-hole-6.0.5/advanced/Scripts/database_migration/gravity-db.sh pi-hole-6.0.5.cust/advanced/Scripts/database_migration/gravity-db.sh
 --- pi-hole-6.0.5/advanced/Scripts/database_migration/gravity-db.sh	2025-03-04 18:21:05.000000000 +0100
-+++ pi-hole-6.0.5.cust/advanced/Scripts/database_migration/gravity-db.sh	2025-03-05 18:41:54.954971109 +0100
++++ pi-hole-6.0.5.cust/advanced/Scripts/database_migration/gravity-db.sh	2025-03-05 22:31:44.284892287 +0100
 @@ -10,7 +10,7 @@
  # This file is copyright under the latest version of the EUPL.
  # Please see LICENSE file for your rights under this license.
@@ -12,7 +20,7 @@ diff -uprN pi-hole-6.0.5/advanced/Scripts/database_migration/gravity-db.sh pi-ho
      local database piholeDir version
 diff -uprN pi-hole-6.0.5/advanced/Scripts/piholeLogFlush.sh pi-hole-6.0.5.cust/advanced/Scripts/piholeLogFlush.sh
 --- pi-hole-6.0.5/advanced/Scripts/piholeLogFlush.sh	2025-03-04 18:21:05.000000000 +0100
-+++ pi-hole-6.0.5.cust/advanced/Scripts/piholeLogFlush.sh	2025-03-05 18:41:54.968124107 +0100
++++ pi-hole-6.0.5.cust/advanced/Scripts/piholeLogFlush.sh	2025-03-05 22:31:44.288923915 +0100
 @@ -29,7 +29,7 @@ fi
  # Determine log file location
  LOGFILE=$(getFTLConfigValue "files.log.dnsmasq")
@@ -40,7 +48,7 @@ diff -uprN pi-hole-6.0.5/advanced/Scripts/piholeLogFlush.sh pi-hole-6.0.5.cust/a
          # and empty out pihole.log
 diff -uprN pi-hole-6.0.5/advanced/Scripts/updatecheck.sh pi-hole-6.0.5.cust/advanced/Scripts/updatecheck.sh
 --- pi-hole-6.0.5/advanced/Scripts/updatecheck.sh	2025-03-04 18:21:05.000000000 +0100
-+++ pi-hole-6.0.5.cust/advanced/Scripts/updatecheck.sh	2025-03-05 18:41:54.924178385 +0100
++++ pi-hole-6.0.5.cust/advanced/Scripts/updatecheck.sh	2025-03-05 22:31:44.256934676 +0100
 @@ -68,13 +68,13 @@ fi
  
  # get Core versions
@@ -77,7 +85,7 @@ diff -uprN pi-hole-6.0.5/advanced/Scripts/updatecheck.sh pi-hole-6.0.5.cust/adva
  GITHUB_WEB_VERSION="$(get_remote_version web "${WEB_BRANCH}")"
 diff -uprN pi-hole-6.0.5/advanced/Templates/logrotate pi-hole-6.0.5.cust/advanced/Templates/logrotate
 --- pi-hole-6.0.5/advanced/Templates/logrotate	2025-03-04 18:21:05.000000000 +0100
-+++ pi-hole-6.0.5.cust/advanced/Templates/logrotate	2025-03-05 18:41:54.967252680 +0100
++++ pi-hole-6.0.5.cust/advanced/Templates/logrotate	2025-03-05 22:31:44.288105815 +0100
 @@ -1,4 +1,4 @@
 -/var/log/pihole/pihole.log {
 +/run/log/pihole/pihole.log {
@@ -104,12 +112,12 @@ diff -uprN pi-hole-6.0.5/advanced/Templates/logrotate pi-hole-6.0.5.cust/advance
      copytruncate
 diff -uprN pi-hole-6.0.5/advanced/Templates/pihole.sudo pi-hole-6.0.5.cust/advanced/Templates/pihole.sudo
 --- pi-hole-6.0.5/advanced/Templates/pihole.sudo	1970-01-01 01:00:00.000000000 +0100
-+++ pi-hole-6.0.5.cust/advanced/Templates/pihole.sudo	2025-03-05 18:41:54.968604181 +0100
++++ pi-hole-6.0.5.cust/advanced/Templates/pihole.sudo	2025-03-05 22:31:44.289444351 +0100
 @@ -0,0 +1 @@
 +http ALL=(ALL:ALL) NOPASSWD: /usr/bin/pihole
 diff -uprN pi-hole-6.0.5/gravity.sh pi-hole-6.0.5.cust/gravity.sh
 --- pi-hole-6.0.5/gravity.sh	2025-03-04 18:21:05.000000000 +0100
-+++ pi-hole-6.0.5.cust/gravity.sh	2025-03-05 18:41:54.953923630 +0100
++++ pi-hole-6.0.5.cust/gravity.sh	2025-03-05 22:31:44.283680733 +0100
 @@ -23,10 +23,10 @@ coltable="${PI_HOLE_SCRIPT_DIR}/COL_TABL
  # shellcheck disable=SC1090
  . "${coltable}"
@@ -136,7 +144,7 @@ diff -uprN pi-hole-6.0.5/gravity.sh pi-hole-6.0.5.cust/gravity.sh
  curl_connect_timeout=10
 diff -uprN pi-hole-6.0.5/pihole pi-hole-6.0.5.cust/pihole
 --- pi-hole-6.0.5/pihole	2025-03-04 18:21:05.000000000 +0100
-+++ pi-hole-6.0.5.cust/pihole	2025-03-05 18:41:54.955864046 +0100
++++ pi-hole-6.0.5.cust/pihole	2025-03-05 22:31:44.285886859 +0100
 @@ -97,25 +97,6 @@ arpFunc() {
    exit 0
  }
