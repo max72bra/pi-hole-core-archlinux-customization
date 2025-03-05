@@ -142,7 +142,7 @@ if [ -s $_ssc ] ; then rm $_ssc ; else echo "   ==> Sed error: change log and bi
 # -----------------
 
 # pi-hole sudoers file is now populated by install script
-echo "http ALL=(ALL:ALL) NOPASSWD: /usr/bin/pihole" >> "$dirb"/advanced/Templates/pihole.sudo
+echo "pihole ALL=(ALL:ALL) NOPASSWD: /usr/bin/pihole" >> "$dirb"/advanced/Templates/pihole.sudo
 
 # pi-hole dnsmasq config file include ready
 #echo "conf-dir=/etc/dnsmasq.d/,*.conf" >> "$dirb"/advanced/dnsmasq.conf.original
