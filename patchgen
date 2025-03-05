@@ -145,16 +145,16 @@ if [ -s $_ssc ] ; then rm $_ssc ; else echo "   ==> Sed error: change log and bi
 echo "http ALL=(ALL:ALL) NOPASSWD: /usr/bin/pihole" >> "$dirb"/advanced/Templates/pihole.sudo
 
 # pi-hole dnsmasq config file include ready
-echo "conf-dir=/etc/dnsmasq.d/,*.conf" >> "$dirb"/advanced/dnsmasq.conf.original
+#echo "conf-dir=/etc/dnsmasq.d/,*.conf" >> "$dirb"/advanced/dnsmasq.conf.original
 
 # adlists.default is gone and adlists.list is populated by install script
 # from basic-install.sh -- function chooseBlocklists()
-cat <<EOF > "$dirb"/adlists.list
-https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts
-https://mirror1.malwaredomains.com/files/justdomains
-https://s3.amazonaws.com/lists.disconnect.me/simple_tracking.txt
-https://s3.amazonaws.com/lists.disconnect.me/simple_ad.txt
-EOF
+#cat <<EOF > "$dirb"/adlists.list
+#https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts
+#https://mirror1.malwaredomains.com/files/justdomains
+#https://s3.amazonaws.com/lists.disconnect.me/simple_tracking.txt
+#https://s3.amazonaws.com/lists.disconnect.me/simple_ad.txt
+#EOF
 
 #cat <<EOF > "$dirb"/dns-servers.conf
 #Google (ECS, DNSSEC);8.8.8.8;8.8.4.4;2001:4860:4860:0:0:0:0:8888;2001:4860:4860:0:0:0:0:8844
