@@ -1,6 +1,6 @@
 diff -uprN pi-hole-6.0.5/adlists.list pi-hole-6.0.5.cust/adlists.list
 --- pi-hole-6.0.5/adlists.list	1970-01-01 01:00:00.000000000 +0100
-+++ pi-hole-6.0.5.cust/adlists.list	2025-03-19 23:14:03.193526709 +0100
++++ pi-hole-6.0.5.cust/adlists.list	2025-03-19 23:14:18.621800381 +0100
 @@ -0,0 +1,4 @@
 +https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts
 +https://mirror1.malwaredomains.com/files/justdomains
@@ -8,7 +8,7 @@ diff -uprN pi-hole-6.0.5/adlists.list pi-hole-6.0.5.cust/adlists.list
 +https://s3.amazonaws.com/lists.disconnect.me/simple_ad.txt
 diff -uprN pi-hole-6.0.5/advanced/Scripts/database_migration/gravity-db.sh pi-hole-6.0.5.cust/advanced/Scripts/database_migration/gravity-db.sh
 --- pi-hole-6.0.5/advanced/Scripts/database_migration/gravity-db.sh	2025-03-04 18:21:05.000000000 +0100
-+++ pi-hole-6.0.5.cust/advanced/Scripts/database_migration/gravity-db.sh	2025-03-19 23:14:03.188324029 +0100
++++ pi-hole-6.0.5.cust/advanced/Scripts/database_migration/gravity-db.sh	2025-03-19 23:14:18.617095226 +0100
 @@ -10,7 +10,7 @@
  # This file is copyright under the latest version of the EUPL.
  # Please see LICENSE file for your rights under this license.
@@ -18,9 +18,21 @@ diff -uprN pi-hole-6.0.5/advanced/Scripts/database_migration/gravity-db.sh pi-ho
  
  upgrade_gravityDB(){
      local database piholeDir version
+diff -uprN pi-hole-6.0.5/advanced/Scripts/piholeARPTable.sh pi-hole-6.0.5.cust/advanced/Scripts/piholeARPTable.sh
+--- pi-hole-6.0.5/advanced/Scripts/piholeARPTable.sh	2025-03-04 18:21:05.000000000 +0100
++++ pi-hole-6.0.5.cust/advanced/Scripts/piholeARPTable.sh	2025-03-19 23:14:18.568930442 +0100
+@@ -64,7 +64,7 @@ flushARP(){
+     fi
+ 
+     # Start FTL again
+-    if ! output=$(service pihole-FTL restart 2>&1); then
++    if ! output=$(systemctl restart pihole-FTL 2>&1); then
+         echo -e "${OVER}  ${CROSS} Failed to restart FTL"
+         echo "  Output: ${output}"
+         return 1
 diff -uprN pi-hole-6.0.5/advanced/Scripts/piholeLogFlush.sh pi-hole-6.0.5.cust/advanced/Scripts/piholeLogFlush.sh
 --- pi-hole-6.0.5/advanced/Scripts/piholeLogFlush.sh	2025-03-04 18:21:05.000000000 +0100
-+++ pi-hole-6.0.5.cust/advanced/Scripts/piholeLogFlush.sh	2025-03-19 23:14:03.192615720 +0100
++++ pi-hole-6.0.5.cust/advanced/Scripts/piholeLogFlush.sh	2025-03-19 23:14:18.620963373 +0100
 @@ -29,7 +29,7 @@ fi
  # Determine log file location
  LOGFILE=$(getFTLConfigValue "files.log.dnsmasq")
@@ -48,7 +60,7 @@ diff -uprN pi-hole-6.0.5/advanced/Scripts/piholeLogFlush.sh pi-hole-6.0.5.cust/a
          # and empty out pihole.log
 diff -uprN pi-hole-6.0.5/advanced/Scripts/updatecheck.sh pi-hole-6.0.5.cust/advanced/Scripts/updatecheck.sh
 --- pi-hole-6.0.5/advanced/Scripts/updatecheck.sh	2025-03-04 18:21:05.000000000 +0100
-+++ pi-hole-6.0.5.cust/advanced/Scripts/updatecheck.sh	2025-03-19 23:14:03.166052947 +0100
++++ pi-hole-6.0.5.cust/advanced/Scripts/updatecheck.sh	2025-03-19 23:14:18.560055574 +0100
 @@ -68,13 +68,13 @@ fi
  
  # get Core versions
@@ -85,7 +97,7 @@ diff -uprN pi-hole-6.0.5/advanced/Scripts/updatecheck.sh pi-hole-6.0.5.cust/adva
  GITHUB_WEB_VERSION="$(get_remote_version web "${WEB_BRANCH}")"
 diff -uprN pi-hole-6.0.5/advanced/Templates/logrotate pi-hole-6.0.5.cust/advanced/Templates/logrotate
 --- pi-hole-6.0.5/advanced/Templates/logrotate	2025-03-04 18:21:05.000000000 +0100
-+++ pi-hole-6.0.5.cust/advanced/Templates/logrotate	2025-03-19 23:14:03.191713581 +0100
++++ pi-hole-6.0.5.cust/advanced/Templates/logrotate	2025-03-19 23:14:18.620128515 +0100
 @@ -1,4 +1,4 @@
 -/var/log/pihole/pihole.log {
 +/run/log/pihole/pihole.log {
@@ -112,12 +124,12 @@ diff -uprN pi-hole-6.0.5/advanced/Templates/logrotate pi-hole-6.0.5.cust/advance
      copytruncate
 diff -uprN pi-hole-6.0.5/advanced/Templates/pihole.sudo pi-hole-6.0.5.cust/advanced/Templates/pihole.sudo
 --- pi-hole-6.0.5/advanced/Templates/pihole.sudo	1970-01-01 01:00:00.000000000 +0100
-+++ pi-hole-6.0.5.cust/advanced/Templates/pihole.sudo	2025-03-19 23:14:03.193134265 +0100
++++ pi-hole-6.0.5.cust/advanced/Templates/pihole.sudo	2025-03-19 23:14:18.621446367 +0100
 @@ -0,0 +1 @@
 +pihole ALL=(ALL:ALL) NOPASSWD: /usr/bin/pihole
 diff -uprN pi-hole-6.0.5/gravity.sh pi-hole-6.0.5.cust/gravity.sh
 --- pi-hole-6.0.5/gravity.sh	2025-03-04 18:21:05.000000000 +0100
-+++ pi-hole-6.0.5.cust/gravity.sh	2025-03-19 23:14:03.187315650 +0100
++++ pi-hole-6.0.5.cust/gravity.sh	2025-03-19 23:14:18.616036966 +0100
 @@ -23,10 +23,10 @@ coltable="${PI_HOLE_SCRIPT_DIR}/COL_TABL
  # shellcheck disable=SC1090
  . "${coltable}"
@@ -144,7 +156,7 @@ diff -uprN pi-hole-6.0.5/gravity.sh pi-hole-6.0.5.cust/gravity.sh
  curl_connect_timeout=10
 diff -uprN pi-hole-6.0.5/pihole pi-hole-6.0.5.cust/pihole
 --- pi-hole-6.0.5/pihole	2025-03-04 18:21:05.000000000 +0100
-+++ pi-hole-6.0.5.cust/pihole	2025-03-19 23:14:03.189166277 +0100
++++ pi-hole-6.0.5.cust/pihole	2025-03-19 23:14:18.617936534 +0100
 @@ -97,25 +97,6 @@ arpFunc() {
    exit 0
  }
