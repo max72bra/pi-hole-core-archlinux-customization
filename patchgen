@@ -1,6 +1,6 @@
 #!/bin/sh
 
-_pkgver=6.0.6
+_pkgver=6.1
 _pkgrel=1
 source_core="https://github.com/pi-hole/pi-hole/archive/v$_pkgver.tar.gz"
 dira="pi-hole-$_pkgver"
@@ -36,10 +36,14 @@ if [ -s $_ssc ] ; then rm $_ssc ; else echo "   ==> Sed error: update checker 6"
 sed -i 's/^WEB_HASH=.*$/WEB_HASH="builtfromreleasetarball"/' "$dirb"/advanced/Scripts/updatecheck.sh
 
 # the return of service management
-sed -i "s|service pihole-FTL restart|systemctl restart pihole-FTL|w $_ssc" "$dirb"/advanced/Scripts/piholeARPTable.sh
+sed -i "s|restart_service |systemctl restart |w $_ssc" "$dirb"/advanced/Scripts/piholeARPTable.sh
 if [ -s $_ssc ] ; then rm $_ssc ; else echo "   ==> Sed error: the return of service management 1" && exit 1 ; fi
-sed -i "s|service pihole-FTL stop|systemctl stop pihole-FTL|w $_ssc" "$dirb"/advanced/Scripts/piholeARPTable.sh
+sed -i "s|restart_service |systemctl restart |w $_ssc" "$dirb"/advanced/Scripts/piholeLogFlush.sh
 if [ -s $_ssc ] ; then rm $_ssc ; else echo "   ==> Sed error: the return of service management 2" && exit 1 ; fi
+sed -i "s|stop_service |systemctl stop |w $_ssc" "$dirb"/advanced/Scripts/piholeARPTable.sh
+if [ -s $_ssc ] ; then rm $_ssc ; else echo "   ==> Sed error: the return of service management 3" && exit 1 ; fi
+sed -i "s|stop_service |systemctl stop |w $_ssc" "$dirb"/advanced/Scripts/piholeLogFlush.sh
+if [ -s $_ssc ] ; then rm $_ssc ; else echo "   ==> Sed error: the return of service management 4" && exit 1 ; fi
 
 # setting up and securing pihole wrapper script
 #sed -n "/debugFunc() {/w $_ssc" "$dirb"/pihole
@@ -60,7 +64,7 @@ sed -i '/uninstallFunc() {/,+8d' "$dirb"/pihole
 
 sed -n "/piholeCheckoutFunc() {/w $_ssc" "$dirb"/pihole
 if [ -s $_ssc ] ; then rm $_ssc ; else echo "   ==> Sed error: setting up and securing pihole wrapper script 5" && exit 1 ; fi
-sed -i '/piholeCheckoutFunc() {/,+31d' "$dirb"/pihole
+sed -i '/piholeCheckoutFunc() {/,+32d' "$dirb"/pihole
 
 sed -n "/tricorderFunc() {/w $_ssc" "$dirb"/pihole
 if [ -s $_ssc ] ; then rm $_ssc ; else echo "   ==> Sed error: setting up and securing pihole wrapper script 6" && exit 1 ; fi
