@@ -1,6 +1,6 @@
 #!/bin/sh
 
-_pkgver=6.1.4
+_pkgver=6.2.1
 _pkgrel=1
 source_core="https://github.com/pi-hole/pi-hole/archive/v$_pkgver.tar.gz"
 dira="pi-hole-$_pkgver"
@@ -36,12 +36,12 @@ if [ -s $_ssc ] ; then rm $_ssc ; else echo "   ==> Sed error: update checker 6"
 sed -i 's/^WEB_HASH=.*$/WEB_HASH="builtfromreleasetarball"/' "$dirb"/advanced/Scripts/updatecheck.sh
 
 # the return of service management
-sed -i "s|service pihole-FTL restart|systemctl restart pihole-FTL|w $_ssc" "$dirb"/advanced/Scripts/piholeARPTable.sh
-if [ -s $_ssc ] ; then rm $_ssc ; else echo "   ==> Sed error: the return of service management 1" && exit 1 ; fi
+# sed -i "s|service pihole-FTL restart|systemctl restart pihole-FTL|w $_ssc" "$dirb"/advanced/Scripts/piholeARPTable.sh
+# if [ -s $_ssc ] ; then rm $_ssc ; else echo "   ==> Sed error: the return of service management 1" && exit 1 ; fi
 sed -i "s|service pihole-FTL restart|systemctl restart pihole-FTL|w $_ssc" "$dirb"/advanced/Scripts/piholeLogFlush.sh
 if [ -s $_ssc ] ; then rm $_ssc ; else echo "   ==> Sed error: the return of service management 2" && exit 1 ; fi
-sed -i "s|service pihole-FTL stop|systemctl stop pihole-FTL|w $_ssc" "$dirb"/advanced/Scripts/piholeARPTable.sh
-if [ -s $_ssc ] ; then rm $_ssc ; else echo "   ==> Sed error: the return of service management 3" && exit 1 ; fi
+# sed -i "s|service pihole-FTL stop|systemctl stop pihole-FTL|w $_ssc" "$dirb"/advanced/Scripts/piholeARPTable.sh
+# if [ -s $_ssc ] ; then rm $_ssc ; else echo "   ==> Sed error: the return of service management 3" && exit 1 ; fi
 sed -i "s|service pihole-FTL stop|systemctl stop pihole-FTL|w $_ssc" "$dirb"/advanced/Scripts/piholeLogFlush.sh
 if [ -s $_ssc ] ; then rm $_ssc ; else echo "   ==> Sed error: the return of service management 4" && exit 1 ; fi
 
